@@ -17,11 +17,13 @@ class CachedGeoIPService extends GeoIPService
      * @var CacheItemPoolInterface
      */
     private CacheItemPoolInterface $pool;
+    private int $ttl;
 
-    public function __construct(GeoIPService $geoIPService, CacheItemPoolInterface $pool, $ttl)
+    public function __construct(GeoIPService $geoIPService, CacheItemPoolInterface $pool, int $ttl)
     {
         $this->geoIPService = $geoIPService;
         $this->pool         = $pool;
+        $this->ttl          = $ttl;
     }
 
     public function resolveIp(string $ip)
@@ -36,7 +38,7 @@ class CachedGeoIPService extends GeoIPService
         $result = $this->geoIPService->resolveIp($ip);
 
         $item->set($result);
-        $item->expiresAfter(60);
+        $item->expiresAfter($this->ttl);
 
         $this->pool->save($item);
 
