@@ -9,6 +9,7 @@ use it only if you're stuck and are falling behind, also do not skip ahead.
 - PHP 7.x or 8.x
 - [Composer](https://getcomposer.org/)
 - [Symfony CLI](https://symfony.com/download)
+- [Postgres](https://www.postgresql.org/) or some other DB supported by doctrine
 - ab ([apache bench](http://httpd.apache.org/docs/2.4/programs/ab.html) - recommended, available via apache2-utils apt package)
 - [Varnish 6.x](https://varnish-cache.org/)
 
