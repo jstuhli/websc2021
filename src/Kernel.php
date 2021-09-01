@@ -2,14 +2,26 @@
 
 namespace App;
 
+use FOS\HttpCache\SymfonyCache\HttpCacheAware;
+use FOS\HttpCache\SymfonyCache\HttpCacheProvider;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
-class Kernel extends BaseKernel
+class Kernel extends BaseKernel implements HttpCacheProvider
 {
     use MicroKernelTrait;
+
+    use HttpCacheAware;
+
+
+    public function __construct(string $environment, bool $debug)
+    {
+        parent::__construct($environment, $debug);
+        $this->setHttpCache(new CacheKernel($this));
+    }
+
 
     protected function configureContainer(ContainerConfigurator $container): void
     {

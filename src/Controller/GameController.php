@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\CacheKernel;
 use App\Entity\Game;
 use Doctrine\Persistence\ManagerRegistry;
+use FOS\HttpCacheBundle\Configuration\Tag;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,14 +32,26 @@ class GameController extends AbstractController
         return $this->json($game);
     }
 
-    #[Route('/{id}')]
+    #[Route('/{id}', methods: 'GET')]
     #[Cache(maxage: 30, public: true)]
+    #[Tag('game', expression: "'game'~id")]
     public function gameAction(Game $game): Response
     {
         return $this->json($game);
     }
 
+    #[Route('/{id}', methods: 'POST')]
+    #[Cache(maxage: 30, public: true)]
+    #[Tag('game', expression: "'game'~id")]
+    public function gameUpdateAction(Game $game, ManagerRegistry $registry): Response
+    {
+        $game->setHomeScore($game->getHomeScore() + 1);
+        $registry->getManager()->flush();
+        return $this->json($game);
+    }
+
     #[Route('/{id}/{team}/increment-score', requirements: ['team' => 'home|away'], methods: 'POST')]
+    #[Tag('game', expression: "'game'~id")]
     public function incrementScore(CacheKernel $kernel, ManagerRegistry $registry, Request $request, Game $game, string $team): Response
     {
         if ($team == 'home') {
