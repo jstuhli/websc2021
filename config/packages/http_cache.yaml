@@ -1,0 +1,6 @@
+fos_http_cache:
+    tags:
+        enabled: true
+    proxy_client:
+        symfony:
+            use_kernel_dispatcher: true
