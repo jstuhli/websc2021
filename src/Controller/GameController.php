@@ -34,7 +34,6 @@ class GameController extends AbstractController
 
     #[Route('/{id}', methods: 'GET')]
     #[Cache(maxage: 30, public: true)]
-    #[Tag('game', expression: "'game'~id")]
     public function gameAction(Game $game): Response
     {
         return $this->json($game);
@@ -42,7 +41,6 @@ class GameController extends AbstractController
 
     #[Route('/{id}', methods: 'POST')]
     #[Cache(maxage: 30, public: true)]
-    #[Tag('game', expression: "'game'~id")]
     public function gameUpdateAction(Game $game, ManagerRegistry $registry): Response
     {
         $game->setHomeScore($game->getHomeScore() + 1);
@@ -51,7 +49,6 @@ class GameController extends AbstractController
     }
 
     #[Route('/{id}/{team}/increment-score', requirements: ['team' => 'home|away'], methods: 'POST')]
-    #[Tag('game', expression: "'game'~id")]
     public function incrementScore(CacheKernel $kernel, ManagerRegistry $registry, Request $request, Game $game, string $team): Response
     {
         if ($team == 'home') {
@@ -61,8 +58,6 @@ class GameController extends AbstractController
         }
 
         $registry->getManager()->flush();
-
-        $kernel->getStore()->purge($request->getSchemeAndHttpHost() . '/game/' . $game->getId());
 
         return $this->json($game);
     }

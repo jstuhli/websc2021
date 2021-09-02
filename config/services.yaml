@@ -28,3 +28,11 @@ services:
         decorates: App\Service\GeoIP\GeoIPService
         arguments:
             $ttl: '%app.cache.geoip.ttl%'
+    App\Listener\EntityChangeListener:
+        arguments:
+            $store: '@http_cache.store'
+        tags:
+            - { name: 'doctrine.event_listener', event: 'postPersist'}
+            - { name: 'doctrine.event_listener', event: 'postUpdate'}
+            - { name: 'doctrine.event_listener', event: 'postRemove'}
+            - { name: 'doctrine.event_listener', event: 'postFlush'}
