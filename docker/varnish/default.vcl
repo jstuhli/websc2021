@@ -11,6 +11,7 @@
 # Marker to tell the VCL compiler that this VCL has been written with the
 # 4.0 or 4.1 syntax.
 vcl 4.1;
+import std;
 
 # Default backend definition. Set this to point to your content server.
 backend default {
@@ -24,12 +25,24 @@ acl purge {
 }
 
 sub vcl_recv {
-        if (req.method == "PURGE") {
-                if (!client.ip ~ purge) {
-                        return(synth(405,"Not allowed."));
-                }
-                return (purge);
-        }
+    if (req.method == "PURGE") {
+            if (!client.ip ~ purge) {
+                    return(synth(405,"Not allowed."));
+            }
+            return (purge);
+    }
+
+    # sort the query
+	set req.url = std.querysort(req.url);
+
+	# or remove the query completely if your app doesn't use it
+    set req.url = regsuball(req.url, "\?.+", "");
+
+    # unset the Cookie if not used (but leave for wp-admin for example)
+    if(!(req.url ~ "^/wp-admin/")) {
+        unset req.http.cookie;
+    }
+
     # Happens before we check if we have this in cache already.
     #
     # Typically you clean up the request here, removing cookies you don't need,
