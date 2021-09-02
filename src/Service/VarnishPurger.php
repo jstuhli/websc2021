@@ -19,7 +19,7 @@ class VarnishPurger implements PurgerInterface
     public function purge(iterable $urls): void
     {
         foreach ($urls as $url) {
-            $this->client->request('PURGE', 'http://127.0.0.1:6081' . $url);
+            $this->client->request('PURGE', 'http://varnish' . $url, ['headers' => ['Host' => 'localhost:6081']]);
         }
     }
 }

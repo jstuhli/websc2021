@@ -18,7 +18,18 @@ backend default {
     .port = "8000";
 }
 
+acl purge {
+        "localhost";
+        "172.0.0.0"/8;
+}
+
 sub vcl_recv {
+        if (req.method == "PURGE") {
+                if (!client.ip ~ purge) {
+                        return(synth(405,"Not allowed."));
+                }
+                return (purge);
+        }
     # Happens before we check if we have this in cache already.
     #
     # Typically you clean up the request here, removing cookies you don't need,
