@@ -7,6 +7,7 @@ use App\Entity\Game;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\HttpCacheBundle\Configuration\Tag;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use SofaScore\Purgatory\Annotation\PurgeOn;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +35,7 @@ class GameController extends AbstractController
 
     #[Route('/{id}', methods: 'GET')]
     #[Cache(maxage: 30, public: true)]
+    #[PurgeOn(Game::class)]
     public function gameAction(Game $game): Response
     {
         return $this->json($game);

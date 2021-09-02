@@ -43,7 +43,7 @@ class EntityChangeListener
         }
 
         foreach ($this->urls as $url) {
-            $this->store->purge($url);
+//            $this->store->purge($url);
         }
 
         $this->urls = [];
