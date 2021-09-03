@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+    database:
+        image: 'postgres:alpine'
+        environment:
+            POSTGRES_PASSWORD: websc
+            POSTGRES_USER: websc
+            POSTGRES_DB: websc
+        ports:
+            - '5432:5432'
+    php:
+        build: ./docker/php/
+        command: 'php -S 0.0.0.0:8000 -t /app/public'
+        volumes:
+          - './:/app'
+        ports:
+          - '8000:8000'
+        extra_hosts:
+          - 'host.docker.internal:host-gateway'
+        environment:
+            PHP_CLI_SERVER_WORKERS: 10
+    varnish:
+        image: 'varnish:6.6-alpine'
+        volumes:
+            - './docker/varnish:/etc/varnish'
+        ports:
+            - '6081:80'
